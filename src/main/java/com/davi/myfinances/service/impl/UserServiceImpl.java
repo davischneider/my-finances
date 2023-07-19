@@ -1,5 +1,6 @@
 package com.davi.myfinances.service.impl;
 
+import com.davi.myfinances.exception.BusinessRuleException;
 import com.davi.myfinances.model.entity.User;
 import com.davi.myfinances.model.repository.UserRepository;
 import com.davi.myfinances.service.UserService;
@@ -27,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void validateEmail(String email) {
-
+        boolean exists = repository.existsByEmail(email);
+        if (exists) {
+            throw new BusinessRuleException("Já existe usuário cadastrado com o email informado!");
+        }
     }
 }
