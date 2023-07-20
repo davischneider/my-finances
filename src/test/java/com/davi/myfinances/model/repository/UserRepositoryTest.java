@@ -27,4 +27,13 @@ public class UserRepositoryTest {
 
         Assertions.assertTrue(result);
     }
+
+    @Test
+    public void shouldReturnFalseWhenThereIsNoEmailAlready() {
+        repository.deleteAll();
+
+        boolean result = repository.existsByEmail("user@email.com");
+
+        Assertions.assertFalse(result);
+    }
 }
