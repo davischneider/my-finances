@@ -1,11 +1,15 @@
 package com.davi.myfinances.service.impl;
 
+import com.davi.myfinances.exception.AuthException;
 import com.davi.myfinances.exception.BusinessRuleException;
 import com.davi.myfinances.model.entity.User;
 import com.davi.myfinances.model.repository.UserRepository;
 import com.davi.myfinances.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,12 +22,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User auth(String email, String password) {
-        return null;
+        Optional<User> user = repository.findByEmail(email);
+
+        if (!user.isPresent()) {
+            throw new AuthException("Usuário não encontrado para o email informado!");
+        }
+
+        if (!user.get().getPassword().equals(password)) {
+            throw new AuthException("Senha inválida!");
+        }
+        return user.get();
     }
 
     @Override
-    public User saveUser(User usuario) {
-        return null;
+    @Transactional
+    public User saveUser(User user) {
+        validateEmail(user.getEmail());
+        return repository.save(user);
     }
 
     @Override
