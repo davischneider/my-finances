@@ -3,8 +3,10 @@ package com.davi.myfinances.model.entity;
 import com.davi.myfinances.model.enums.LaunchStatus;
 import com.davi.myfinances.model.enums.LaunchType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import java.math.BigDecimal;
@@ -14,6 +16,8 @@ import java.time.LocalDate;
 @Table(name = "launch")
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Launch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +34,7 @@ public class Launch {
     private Integer year;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column

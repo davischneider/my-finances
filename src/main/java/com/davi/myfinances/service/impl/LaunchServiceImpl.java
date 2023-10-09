@@ -3,6 +3,7 @@ package com.davi.myfinances.service.impl;
 import com.davi.myfinances.exception.BusinessRuleException;
 import com.davi.myfinances.model.entity.Launch;
 import com.davi.myfinances.model.enums.LaunchStatus;
+import com.davi.myfinances.model.enums.LaunchType;
 import com.davi.myfinances.model.repository.LaunchRepository;
 import com.davi.myfinances.service.LaunchService;
 import org.springframework.data.domain.Example;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class LaunchServiceImpl implements LaunchService {
@@ -82,5 +84,27 @@ public class LaunchServiceImpl implements LaunchService {
         if (launch.getType() == null) {
             throw new BusinessRuleException("Informe um tipo de lançamento!");
         }
+    }
+
+    @Override
+    public Optional<Launch> getById(Long id) {
+        return launchRepository.findById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getBalanceByUser(Long userId) {
+        BigDecimal revenues = launchRepository.getBalanceByTypeAndUser(userId, LaunchType.RECEITA);
+        BigDecimal expenses = launchRepository.getBalanceByTypeAndUser(userId, LaunchType.DESPESA);
+
+        if (revenues == null) {
+            revenues = BigDecimal.ZERO;
+        }
+
+        if (expenses == null) {
+            expenses = BigDecimal.ZERO;
+        }
+
+        return revenues.subtract(expenses);
     }
 }
